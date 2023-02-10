@@ -2,10 +2,10 @@ use once_cell::sync::Lazy;
 
 use uuid::Uuid;
 
-use sqlx::{Connection, Executor, PgConnection, PgPool};
 use nostr_vault::configuration::{get_configuration, DatabaseSettings};
 use nostr_vault::startup::{get_connection_pool, Application};
 use nostr_vault::telemetry::{get_subscriber, init_subscriber};
+use sqlx::{Connection, Executor, PgConnection, PgPool};
 
 // Ensure that the `tracing` stack is only initialised once using `once_cell`
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -24,9 +24,8 @@ pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
     pub port: u16,
-    pub api_client: reqwest::Client
+    pub api_client: reqwest::Client,
 }
-
 
 pub async fn spawn_app() -> TestApp {
     Lazy::force(&TRACING);
@@ -59,7 +58,7 @@ pub async fn spawn_app() -> TestApp {
         address: format!("http://localhost:{}", application_port),
         port: application_port,
         db_pool: get_connection_pool(&configuration.database),
-        api_client: client
+        api_client: client,
     };
     test_app
 }

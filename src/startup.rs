@@ -15,10 +15,8 @@ pub struct Application {
 
 pub struct ApplicationBaseUrl(pub String);
 
-
-
 impl Application {
-    pub async fn build(configuration: Settings) -> Result<Self,anyhow::Error> {
+    pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
         let address = format!(
             "{}:{}",
@@ -30,7 +28,8 @@ impl Application {
             listener,
             connection_pool,
             configuration.application.base_url,
-        ).await?;
+        )
+        .await?;
         Ok(Self { port, server })
     }
 
@@ -61,8 +60,8 @@ pub async fn run(
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
-          //  .route("/login", web::post().to(login))
-          //  .route("/upload_key", web::post().to(upload_key))
+            //  .route("/login", web::post().to(login))
+            //  .route("/upload_key", web::post().to(upload_key))
             .route("/health_check", web::get().to(health_check))
             .app_data(db_pool.clone())
             .app_data(base_url.clone())

@@ -29,7 +29,6 @@ pub struct DatabaseSettings {
     pub require_ssl: bool,
 }
 
-
 impl DatabaseSettings {
     pub fn without_db(&self) -> PgConnectOptions {
         let ssl_mode = if self.require_ssl {
