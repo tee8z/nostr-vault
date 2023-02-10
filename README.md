@@ -11,9 +11,11 @@ Simple server to store private keys and to be used for logins from nostr clients
 
 # dev tools pre-reqs
 * `cargo install cargo-audit`
+* `cargo install cargo-tarpaulin`
 * `rustup toolchain install nightly`
 * `rustup component add clippy`
 * `rustup component add rustfmt`
 * `cargo fmt`
 * `cargo clippy`
 * `cargo audit`
+* `cargo tarpaulin --all`
