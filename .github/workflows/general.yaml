@@ -194,8 +194,13 @@ jobs:
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
-      - name: Run cargo-tarpaulin
-        uses: actions-rs/tarpaulin@v0.1
+    
+      - name: Install cargo-tarpaulin
+        uses: baptiste0928/cargo-install@v1
         with:
-          version: '0.25.0'
-          args: '--ignore-tests --avoid-cfg-tarpaulin'
+          crate:  cargo-tarpaulin
+          version: "0.25.0"
+      
+      - name: Run  cargo-tarpaulin
+        run: cargo tarpaulin --ignore-tests --ignore-config
+          
