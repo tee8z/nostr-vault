@@ -1,11 +1,8 @@
-
 use crate::configuration::{DatabaseSettings, Settings};
-use crate::routes::health_check
+use crate::routes::health_check;
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
-use actix_web_lab::middleware::from_fn;
-use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -63,8 +60,6 @@ pub async fn run(
 
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(message_framework.clone())    
-            .wrap(SessionMiddleware::new(redis_store.clone(), secret_key.clone()))
             .wrap(TracingLogger::default())
           //  .route("/login", web::post().to(login))
           //  .route("/upload_key", web::post().to(upload_key))

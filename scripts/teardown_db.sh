@@ -22,18 +22,6 @@ DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
 DB_NAME="${POSTGRES_DB=nostrvault}"
 DB_PORT="${POSTGRES_PORT=15429}"
 
-if [[ -z "${SKIP_DOCKER}" ]]
-then 
-    docker run \
-        --name nostr_vault_db \
-        -e POSTGRES_USER=${DB_USER} \
-        -e POSTGRES_PASSWORD=${DB_PASSWORD} \
-        -e POSTGRES_DB=${DB_NAME} \
-        -p "${DB_PORT}":5432 \
-        -d postgres \
-        postgres -N 1000
-fi
-
 export PGPASSWORD="${DB_PASSWORD}"
 until psql -h "localhost" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
     >&2 echo "Postgres is still unavailable - sleeping"
@@ -42,9 +30,12 @@ done
 
 >&2 echo "Postgres is up and runnning on port ${DB_PORT}!"
 
-DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}
-export DATABASE_URL
-sqlx database create
-sqlx migrate run
+dropdb --if-exists -h localhost -p ${DB_PORT} -U ${DB_USER} ${DB_NAME}
 
->&2 echo "Postgres has been migrated, ready to go!"
+>&2 echo "Postgres has been dropped!"
+
+if [[ -z "${SKIP_DOCKER}" ]]
+then 
+    docker stop nostr_vault_db
+    docker rm nostr_vault_db
+fi
