@@ -10,8 +10,10 @@ Simple server to store private keys and to be used for logins from nostr clients
     - `cargo install sqlx-cli --no-default-features --features rustls,postgres`
 
 # dev tools pre-reqs
+* `cargo install cargo-audit`
 * `rustup toolchain install nightly`
 * `rustup component add clippy`
 * `rustup component add rustfmt`
 * `cargo fmt`
 * `cargo clippy`
+* `cargo audit`
