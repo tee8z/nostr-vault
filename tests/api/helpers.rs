@@ -84,3 +84,15 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
 
     connection_pool
 }
+
+pub async fn delete_row(db_pool: &PgPool, nip_05_id: String) {
+    sqlx::query!(
+        r#"DELETE 
+        FROM keys
+        WHERE nip_05_id = $1"#,
+        nip_05_id
+    )
+    .execute(db_pool)
+    .await
+    .expect("Failed to clean up inserted value");
+}

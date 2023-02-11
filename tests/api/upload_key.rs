@@ -1,9 +1,9 @@
-use crate::helpers::spawn_app;
+use crate::helpers::{delete_row, spawn_app};
 use nostr_vault::authentication::StoredKey;
 use serde_json::json;
 
 #[tokio::test]
-async fn upload_key_works() {
+async fn upload_key_success() {
     let test_app = spawn_app().await;
     let client = reqwest::Client::new();
     let nip_05_id = "the_name_is_smith_bob_smith@test.com";
@@ -28,19 +28,10 @@ async fn upload_key_works() {
     .fetch_one(&test_app.db_pool)
     .await
     .expect("Failed to fetch saved key");
+    delete_row(&test_app.db_pool, nip_05_id.to_string()).await;
 
-    sqlx::query!(
-        r#"DELETE 
-        FROM keys
-        WHERE nip_05_id = $1"#,
-        nip_05_id
-    )
-    .execute(&test_app.db_pool)
-    .await
-    .expect("Failed to clean up inserted value");
-
-    assert_eq!(saved.private_key_hash, private_key_hash);
     assert!(saved.pin_hash.len() > 0);
+    assert_eq!(saved.private_key_hash, response_body.private_key_hash);
     assert_eq!(saved.created_at.to_rfc3339(), response_body.created_at);
     assert_eq!(saved.id, response_body.id);
     assert_eq!(nip_05_id, response_body.nip_05_id);

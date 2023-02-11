@@ -27,5 +27,49 @@
       }
     },
     "query": "\n    INSERT INTO keys (nip_05_id, pin_hash, private_key_hash)\n    VALUES ($1, $2, $3)\n    RETURNING id, created_at\n        "
+  },
+  "a6481953c67f191f5c50d5edad4cbc546e7dc8bf35c1def6526be305f9a00f0f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int8"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "nip_05_id",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "private_key_hash",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "pin_hash",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT id, created_at, nip_05_id, private_key_hash, pin_hash\n        FROM keys\n        WHERE nip_05_id = $1;\n        "
   }
 }

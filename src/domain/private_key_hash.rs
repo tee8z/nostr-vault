@@ -2,17 +2,17 @@ use secrecy::{ExposeSecret, Secret};
 use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Debug, Clone)]
-pub struct PrivateKey(Secret<String>);
+pub struct PrivateKeyHash(Secret<String>);
 
-impl AsRef<str> for PrivateKey {
+impl AsRef<str> for PrivateKeyHash {
     fn as_ref(&self) -> &str {
         self.0.expose_secret().as_str()
     }
 }
 
 //TODO: come up with a better validation
-impl PrivateKey {
-    pub fn parse(secret: Secret<String>) -> Result<PrivateKey, String> {
+impl PrivateKeyHash {
+    pub fn parse(secret: Secret<String>) -> Result<PrivateKeyHash, String> {
         let s = secret.expose_secret().to_string();
         let is_empty_or_whitespace = s.trim().is_empty();
         let is_too_long = s.graphemes(true).count() > 1000;
@@ -29,7 +29,7 @@ impl PrivateKey {
 
 #[cfg(test)]
 mod tests {
-    use super::PrivateKey;
+    use super::PrivateKeyHash;
     use claim::{assert_err, assert_ok};
     use easy_hasher::easy_hasher::sha256;
     use secrecy::Secret;
@@ -37,7 +37,7 @@ mod tests {
     #[test]
     fn a_too_long_key() {
         let private_key = Secret::new("d".repeat(1001));
-        assert_err!(PrivateKey::parse(private_key));
+        assert_err!(PrivateKeyHash::parse(private_key));
     }
 
     #[test]
@@ -46,6 +46,6 @@ mod tests {
             "npub1d4ed5x49d7p24xn63flj4985dc4gpfngdhtqcxpth0ywhm6czxcscfpcq8".to_string();
         let hash = sha256(&fake_key);
         let private_key = Secret::new(hash.to_hex_string());
-        assert_ok!(PrivateKey::parse(private_key));
+        assert_ok!(PrivateKeyHash::parse(private_key));
     }
 }

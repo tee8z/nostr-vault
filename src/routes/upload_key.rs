@@ -1,5 +1,5 @@
 use crate::authentication::save_private_key_and_pin;
-use crate::domain::{KeyInfo, Nip05ID, Pin, PrivateKey};
+use crate::domain::{KeyInfo, Nip05ID, Pin, PrivateKeyHash};
 use crate::routes::error_chain_fmt;
 use actix_web::{web, ResponseError};
 use reqwest::StatusCode;
@@ -48,13 +48,14 @@ pub async fn upload_key(
     pool: web::Data<PgPool>,
 ) -> Result<String, UploadError> {
     let nip_05_id = Nip05ID::parse(new_key.0.nip_05_id).map_err(UploadError::ValidationError)?;
-    let private_key = PrivateKey::parse(new_key.0.pk).map_err(UploadError::ValidationError)?;
+    let private_key_hash =
+        PrivateKeyHash::parse(new_key.0.pk).map_err(UploadError::ValidationError)?;
     let pin = Pin::parse(new_key.0.pin).map_err(UploadError::ValidationError)?;
 
     let key_info = &KeyInfo {
         nip_05_id,
         pin,
-        private_key,
+        private_key_hash,
     };
 
     let stored_key = save_private_key_and_pin(key_info, &pool)
