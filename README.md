@@ -10,6 +10,8 @@ Simple server to store private keys and to be used for logins from nostr clients
     - `cargo install sqlx-cli --no-default-features --features rustls,postgres`
 
 # dev tools pre-reqs
+* install nix
+    - https://nixos.org/download.html
 * `cargo install cargo-audit`
 * `cargo install cargo-tarpaulin`
 * `rustup toolchain install nightly`
