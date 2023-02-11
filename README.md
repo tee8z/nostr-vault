@@ -9,6 +9,7 @@ Simple server to store private keys and to be used for logins from nostr clients
     - https://docs.docker.com/engine/install/
 * install sqlx cli
     - `cargo install sqlx-cli --no-default-features --features rustls,postgres`
+* rename `example.env` to `.env`
 
 # dev tools pre-reqs
 * `rustup toolchain install stable`

@@ -12,5 +12,7 @@ Cargo.lock
 
 
 # Added by cargo
-
 /target
+
+# Removed so the SLQX macro can build without trying to connect to the DB
+.env
