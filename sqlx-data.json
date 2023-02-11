@@ -1,3 +1,31 @@
 {
-  "db": "PostgreSQL"
+  "db": "PostgreSQL",
+  "7b63b287b9299b3bb689ea2068c392bea267b9fb71eab5c726d89e1af39f509b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int8"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n    INSERT INTO keys (nip_05_id, pin_hash, private_key_hash)\n    VALUES ($1, $2, $3)\n    RETURNING id, created_at\n        "
+  }
 }

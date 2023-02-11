@@ -2,7 +2,6 @@ application:
   port: 8000
   host: 0.0.0.0
   base_url: "http://0.0.0.0"
-  hmac_secret: "very-long-secret-random-key-to-verify-message-integrity-make-the-key-even-longer"
 database:
   host: "127.0.0.1"
   port: 15429
