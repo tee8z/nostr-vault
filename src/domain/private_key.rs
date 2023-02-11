@@ -6,7 +6,7 @@ pub struct PrivateKey(Secret<String>);
 
 impl AsRef<str> for PrivateKey {
     fn as_ref(&self) -> &str {
-        &self.0.expose_secret().as_str()
+        self.0.expose_secret().as_str()
     }
 }
 
