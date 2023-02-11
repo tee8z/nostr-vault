@@ -1,5 +1,5 @@
 use crate::configuration::{DatabaseSettings, Settings};
-use crate::routes::{health_check, upload_key};
+use crate::routes::{fetch_key, health_check, upload_key};
 use actix_cors::Cors;
 use actix_web::dev::Server;
 use actix_web::web::Data;
@@ -64,7 +64,7 @@ pub async fn run(
         App::new()
             .wrap(TracingLogger::default())
             .wrap(cors)
-            //  .route("/login", web::post().to(login))
+            .route("/fetch_key", web::post().to(fetch_key))
             .route("/upload_key", web::post().to(upload_key))
             .route("/health_check", web::get().to(health_check))
             .app_data(db_pool.clone())
