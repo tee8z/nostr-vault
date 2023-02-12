@@ -1,20 +1,23 @@
-use crate::authentication::save_private_key_and_pin;
+use crate::authentication::{save_private_key_and_pin, StoredKey};
 use crate::domain::{KeyInfo, Nip05ID, Pin, PrivateKeyHash};
 use crate::routes::error_chain_fmt;
-use actix_web::{web, ResponseError};
+use actix_web::{web, HttpResponse, ResponseError};
 use reqwest::StatusCode;
 use secrecy::Secret;
 use sqlx::PgPool;
 use std::fmt::Debug;
+use utoipa::ToSchema;
 
-#[derive(serde::Deserialize)]
+use super::ErrorResponse;
+
+#[derive(ToSchema, serde::Deserialize)]
 pub struct NewKey {
     pub nip_05_id: String,
     pub pin: Secret<u64>,
     pub pk: Secret<String>,
 }
 
-#[derive(thiserror::Error)]
+#[derive(ToSchema, thiserror::Error)]
 pub enum UploadError {
     #[error("{0}")]
     ValidationError(String),
@@ -35,8 +38,46 @@ impl ResponseError for UploadError {
             UploadError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
+    fn error_response(&self) -> actix_web::HttpResponse<actix_web::body::BoxBody> {
+        HttpResponse::build(self.status_code()).json(ErrorResponse {
+            ok: false,
+            error: self.to_string(),
+        })
+    }
 }
-
+#[utoipa::path(
+    post,
+    path = "/upload_key",
+    responses(
+        (status = OK,
+            body = StoredKey,
+            example=json!(StoredKey{
+                id: 1000,
+                created_at: "2023-02-12T01:49:35+00:00".to_string(),
+                nip_05_id: "the_name_is_bob_bob_smith@frogs.cloud".to_string(),
+                private_key_hash: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989".to_string(),
+            }),
+            description = "successfully stored key"),
+        (
+            status = BAD_REQUEST,
+            body = ErrorResponse,example=json!(ErrorResponse{
+                ok: false,
+                error: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989 is not a valid private key.".to_string()
+            }),
+            description = "object used to upload the private key fails validation"
+        ),
+        (
+            status = INTERNAL_SERVER_ERROR,
+            body = ErrorResponse,
+            example=json!(ErrorResponse{
+                ok: false,
+                error: "failed to save private key".to_string()
+            }),
+            description = "something went terribly wrong"
+        ),
+    ),
+    request_body = NewKey
+)]
 #[tracing::instrument(
     skip(new_key, pool),
     fields(

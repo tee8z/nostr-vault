@@ -1,3 +1,5 @@
+use utoipa::ToSchema;
+
 pub fn error_chain_fmt(
     e: &impl std::error::Error,
     f: &mut std::fmt::Formatter<'_>,
@@ -9,4 +11,10 @@ pub fn error_chain_fmt(
         current = cause.source();
     }
     Ok(())
+}
+
+#[derive(ToSchema, serde::Serialize, serde::Deserialize)]
+pub struct ErrorResponse {
+    pub ok: bool,
+    pub error: String,
 }

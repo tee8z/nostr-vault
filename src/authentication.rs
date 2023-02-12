@@ -5,6 +5,7 @@ use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
+use utoipa::ToSchema;
 
 #[derive(thiserror::Error, Debug)]
 pub enum AuthError {
@@ -14,7 +15,7 @@ pub enum AuthError {
     UnexpectedError(#[from] anyhow::Error),
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(ToSchema, serde::Serialize, serde::Deserialize)]
 pub struct StoredKey {
     pub id: i64,
     pub created_at: String,

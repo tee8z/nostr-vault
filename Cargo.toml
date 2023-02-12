@@ -10,6 +10,8 @@ path = "src/lib.rs"
 [dependencies]
 actix-cors = "0.6.4"
 actix-web = "4"
+utoipa = { version = "3", features = ["actix_extras"] }
+utoipa-swagger-ui = { version = "3", features = ["actix-web"] }
 tokio = { version = "1.25", features = ["macros", "rt-multi-thread"] }
 serde = "1.0.115"
 config = { version = "0.13", default-features = false, features = ["yaml"] }
