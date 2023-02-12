@@ -1,7 +1,7 @@
 use crate::authentication::{save_private_key_and_pin, StoredKey};
 use crate::domain::{KeyInfo, Nip05ID, Pin, PrivateKeyHash};
 use crate::routes::error_chain_fmt;
-use actix_web::{web, ResponseError, HttpResponse};
+use actix_web::{web, HttpResponse, ResponseError};
 use reqwest::StatusCode;
 use secrecy::Secret;
 use sqlx::PgPool;
@@ -39,10 +39,9 @@ impl ResponseError for UploadError {
         }
     }
     fn error_response(&self) -> actix_web::HttpResponse<actix_web::body::BoxBody> {
-        HttpResponse::build(self.status_code())
-        .json(ErrorResponse { 
+        HttpResponse::build(self.status_code()).json(ErrorResponse {
             ok: false,
-            error: self.to_string()
+            error: self.to_string(),
         })
     }
 }
@@ -50,17 +49,17 @@ impl ResponseError for UploadError {
     post,
     path = "/upload_key",
     responses(
-        (status = OK, 
-            body = StoredKey, 
+        (status = OK,
+            body = StoredKey,
             example=json!(StoredKey{
                 id: 1000,
                 created_at: "2023-02-12T01:49:35+00:00".to_string(),
                 nip_05_id: "the_name_is_bob_bob_smith@frogs.cloud".to_string(),
                 private_key_hash: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989".to_string(),
-            }), 
+            }),
             description = "successfully stored key"),
         (
-            status = BAD_REQUEST, 
+            status = BAD_REQUEST,
             body = ErrorResponse,example=json!(ErrorResponse{
                 ok: false,
                 error: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989 is not a valid private key.".to_string()
@@ -68,8 +67,8 @@ impl ResponseError for UploadError {
             description = "object used to upload the private key fails validation"
         ),
         (
-            status = INTERNAL_SERVER_ERROR, 
-            body = ErrorResponse, 
+            status = INTERNAL_SERVER_ERROR,
+            body = ErrorResponse,
             example=json!(ErrorResponse{
                 ok: false,
                 error: "failed to save private key".to_string()

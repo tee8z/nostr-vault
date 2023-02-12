@@ -6,11 +6,11 @@ use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use tracing::info;
 use std::net::TcpListener;
+use tracing::info;
 use tracing_actix_web::TracingLogger;
-use utoipa_swagger_ui::SwaggerUi;
 use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -20,10 +20,10 @@ use utoipa::OpenApi;
         crate::routes::upload_key
     ),
     components(
-        schemas(crate::routes::KeyLookup, 
-                crate::authentication::StoredKey, 
-                crate::routes::NewKey, 
-                crate::routes::UploadError, 
+        schemas(crate::routes::KeyLookup,
+                crate::authentication::StoredKey,
+                crate::routes::NewKey,
+                crate::routes::UploadError,
                 crate::routes::ErrorResponse)
     ),
     tags(
@@ -31,7 +31,6 @@ use utoipa::OpenApi;
     ),
 )]
 struct ApiDoc;
-
 
 pub struct Application {
     port: u16,
@@ -82,7 +81,7 @@ pub async fn run(
     base_url: String,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
-    let base_url = Data::new(ApplicationBaseUrl(base_url)).clone();
+    let base_url = Data::new(ApplicationBaseUrl(base_url));
     let server = HttpServer::new(move || {
         let cors = Cors::default().allow_any_origin().send_wildcard();
         let openapi = ApiDoc::openapi();
@@ -95,7 +94,7 @@ pub async fn run(
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
             .service(
-                SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-doc/openapi.json", openapi.clone()),
+                SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-doc/openapi.json", openapi),
             )
     })
     .listen(listener)?
