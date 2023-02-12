@@ -47,8 +47,7 @@ impl ResponseError for LookupError {
     }
     fn error_response(&self) -> actix_web::HttpResponse<actix_web::body::BoxBody> {
         HttpResponse::build(self.status_code()).json(ErrorResponse {
-            ok: false,
-            error: self.to_string(),
+            value: self.to_string(),
         })
     }
 }
@@ -66,14 +65,13 @@ impl ResponseError for LookupError {
                     nip_05_id: "the_name_is_bob_bob_smith@frogs.cloud".to_string(),
                     private_key_hash: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989".to_string(),
                 }),
-                description = "successfully found pin"
+                description = "Successfully found pin."
             ),
             (
                 status = FORBIDDEN,
                 body = ErrorResponse,
                 example=json!(ErrorResponse{
-                    ok: false,
-                    error: "Pin is not valid for provided user.".to_string()
+                    value: "Pin is not valid for provided user.".to_string()
                 }),
                 description = "nip 05 id found, but pin does not match"
             ),
@@ -81,8 +79,7 @@ impl ResponseError for LookupError {
                 status = BAD_REQUEST,
                 body = ErrorResponse,
                 example=json!(ErrorResponse{
-                    ok: false,
-                    error: "8ehd99 is not a valid pin.".to_string()
+                    value: "8ehd99 is not a valid pin.".to_string()
                 }),
                 description = "object used to request the private key fails validation"
             ),
@@ -90,19 +87,17 @@ impl ResponseError for LookupError {
                 status = NOT_FOUND,
                 body = ErrorResponse,
                 example=json!(ErrorResponse{
-                    ok: false,
-                    error: "There is no private key associated with the provided pin and user".to_string()
+                    value: "There is no private key associated with the provided pin and user.".to_string()
                 }),
-                description = "nip 05 it and pin pairing not found"
+                description = "nip_05_id and pin pairing not found"
             ),
             (
                 status = INTERNAL_SERVER_ERROR,
                 body =  ErrorResponse,
                 example=json!(ErrorResponse{
-                    ok: false,
-                    error: "unable to connect to db".to_string()
+                    value: "Unable to connect to db.".to_string()
                 }),
-                description = "something went terribly wrong"
+                description = "Something went terribly wrong."
             ),
         ),
         request_body = KeyLookup

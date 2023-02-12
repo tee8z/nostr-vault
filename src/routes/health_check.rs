@@ -4,8 +4,8 @@ use actix_web::{HttpResponse, Responder};
     get,
     path = "/health_check",
     responses(
-        (status = OK, description = "server is up"),
-        (status = INTERNAL_SERVER_ERROR, description = "something went terribly wrong"),
+        (status = OK, description = "Server is up."),
+        (status = INTERNAL_SERVER_ERROR, description = "Something went terribly wrong."),
     ),
 )]
 pub async fn health_check() -> impl Responder {

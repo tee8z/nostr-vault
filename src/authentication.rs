@@ -17,9 +17,13 @@ pub enum AuthError {
 
 #[derive(ToSchema, serde::Serialize, serde::Deserialize)]
 pub struct StoredKey {
+    #[schema(value_type= i64, example = 1000)]
     pub id: i64,
+    #[schema(example = "2023-02-12T01:49:35+00:00")]
     pub created_at: String,
+    #[schema(example = "the_name_is_bob_bob_smith@frogs.cloud")]
     pub nip_05_id: String,
+    #[schema(example = "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989")]
     pub private_key_hash: String,
 }
 
@@ -38,7 +42,7 @@ pub async fn save_private_key_and_pin(
     let pin = key_info.pin.clone();
     let pin_hash = spawn_blocking_with_tracing(move || compute_pin_hash(pin))
         .await?
-        .context("Failed to hash pin")?;
+        .context("Failed to hash pin.")?;
 
     let record = sqlx::query!(
         r#"
@@ -53,7 +57,7 @@ pub async fn save_private_key_and_pin(
     .fetch_one(pool)
     .await
     .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
+        tracing::error!("Failed to execute query: {:?}.", e);
         e
     })?;
     let stored = StoredKey {
