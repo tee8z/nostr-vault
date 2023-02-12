@@ -6,10 +6,10 @@ use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use tracing::info;
 use std::net::TcpListener;
 use tracing::info;
 use tracing_actix_web::TracingLogger;
+use utoipa::openapi::{License, LicenseBuilder};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -85,7 +85,8 @@ pub async fn run(
     let base_url = Data::new(ApplicationBaseUrl(base_url));
     let server = HttpServer::new(move || {
         let cors = Cors::default().allow_any_origin().send_wildcard();
-        let openapi = ApiDoc::openapi();
+        let mut openapi = ApiDoc::openapi();
+        openapi.info.license = get_license();
         App::new()
             .wrap(TracingLogger::default())
             .wrap(cors)
@@ -100,4 +101,15 @@ pub async fn run(
     .run();
     info!("running at http://{}/swagger-ui/  ", address);
     Ok(server)
+}
+
+fn get_license() -> Option<License> {
+    let license = LicenseBuilder::new()
+        .name("MIT")
+        .url(Some(
+            "https://github.com/tee8z/nostr-vault/blob/main/LICENSE",
+        ))
+        .build();
+
+    Some(license)
 }

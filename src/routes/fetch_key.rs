@@ -12,7 +12,9 @@ use super::ErrorResponse;
 
 #[derive(ToSchema, serde::Deserialize)]
 pub struct KeyLookup {
+    #[schema(example = "the_name_is_bob_bob_smith@frogs.cloud")]
     pub nip_05_id: String,
+    #[schema(value_type = u64, example = "401267")]
     pub pin: Secret<u64>,
 }
 

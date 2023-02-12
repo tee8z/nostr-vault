@@ -1,5 +1,6 @@
+use lazy_static::lazy_static;
+use regex::Regex;
 use secrecy::{ExposeSecret, Secret};
-use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Debug, Clone)]
 pub struct PrivateKeyHash(Secret<String>);
@@ -10,21 +11,24 @@ impl AsRef<str> for PrivateKeyHash {
     }
 }
 
-//TODO: come up with a better validation
 impl PrivateKeyHash {
     pub fn parse(secret: Secret<String>) -> Result<PrivateKeyHash, String> {
-        let s = secret.expose_secret().to_string();
-        let is_empty_or_whitespace = s.trim().is_empty();
-        let is_too_long = s.graphemes(true).count() > 1000;
-        let forbidden_characters = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
-        let contains_forbidden_characters = s.chars().any(|g| forbidden_characters.contains(&g));
-
-        if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(format!("{} is not a valid private key.", s))
+        let hash = secret.expose_secret().to_string();
+        let is_empty_or_whitespace = hash.trim().is_empty();
+        let is_valid_characters = is_valid_pk_hash(hash.as_str());
+        if is_empty_or_whitespace || !is_valid_characters {
+            Err(format!("{} is not a valid private key.", hash))
         } else {
-            Ok(Self(Secret::new(s)))
+            Ok(Self(Secret::new(hash)))
         }
     }
+}
+
+fn is_valid_pk_hash(text: &str) -> bool {
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"^[a-fA-F0-9]{64}$").unwrap();
+    }
+    RE.is_match(text)
 }
 
 #[cfg(test)]

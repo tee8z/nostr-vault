@@ -12,9 +12,12 @@ use super::ErrorResponse;
 
 #[derive(ToSchema, serde::Deserialize)]
 pub struct NewKey {
+    #[schema(example = "the_name_is_bob_bob_smith@frogs.cloud")]
     pub nip_05_id: String,
+    #[schema(value_type = u64, example = "401267")]
     pub pin: Secret<u64>,
-    pub pk: Secret<String>,
+    #[schema(value_type = String, example = "5ed7b5ea7564ae34a282bb94a7977b3ca0814d241d0b5794c4cf5f0b80280b3a")]
+    pub private_key_hash: Secret<String>,
 }
 
 #[derive(ToSchema, thiserror::Error)]
@@ -55,7 +58,7 @@ impl ResponseError for UploadError {
                 id: 1000,
                 created_at: "2023-02-12T01:49:35+00:00".to_string(),
                 nip_05_id: "the_name_is_bob_bob_smith@frogs.cloud".to_string(),
-                private_key_hash: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989".to_string(),
+                private_key_hash: "5ed7b5ea7564ae34a282bb94a7977b3ca0814d241d0b5794c4cf5f0b80280b3a".to_string(),
             }),
             description = "successfully stored key"),
         (
@@ -90,7 +93,7 @@ pub async fn upload_key(
 ) -> Result<String, UploadError> {
     let nip_05_id = Nip05ID::parse(new_key.0.nip_05_id).map_err(UploadError::ValidationError)?;
     let private_key_hash =
-        PrivateKeyHash::parse(new_key.0.pk).map_err(UploadError::ValidationError)?;
+        PrivateKeyHash::parse(new_key.0.private_key_hash).map_err(UploadError::ValidationError)?;
     let pin = Pin::parse(new_key.0.pin).map_err(UploadError::ValidationError)?;
 
     let key_info = &KeyInfo {
