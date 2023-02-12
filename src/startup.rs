@@ -93,9 +93,7 @@ pub async fn run(
             .route("/health_check", web::get().to(health_check))
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
-            .service(
-                SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-doc/openapi.json", openapi),
-            )
+            .service(SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-doc/openapi.json", openapi))
     })
     .listen(listener)?
     .run();
