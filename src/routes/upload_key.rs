@@ -43,8 +43,7 @@ impl ResponseError for UploadError {
     }
     fn error_response(&self) -> actix_web::HttpResponse<actix_web::body::BoxBody> {
         HttpResponse::build(self.status_code()).json(ErrorResponse {
-            ok: false,
-            error: self.to_string(),
+            value: self.to_string(),
         })
     }
 }
@@ -60,23 +59,21 @@ impl ResponseError for UploadError {
                 nip_05_id: "the_name_is_bob_bob_smith@frogs.cloud".to_string(),
                 private_key_hash: "5ed7b5ea7564ae34a282bb94a7977b3ca0814d241d0b5794c4cf5f0b80280b3a".to_string(),
             }),
-            description = "successfully stored key"),
+            description = "Successfully stored key."),
         (
             status = BAD_REQUEST,
             body = ErrorResponse,example=json!(ErrorResponse{
-                ok: false,
-                error: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989 is not a valid private key.".to_string()
+                value: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989 is not a valid private key.".to_string()
             }),
-            description = "object used to upload the private key fails validation"
+            description = "Object used to upload the private key fails validation."
         ),
         (
             status = INTERNAL_SERVER_ERROR,
             body = ErrorResponse,
             example=json!(ErrorResponse{
-                ok: false,
-                error: "failed to save private key".to_string()
+                value: "Failed to save private key.".to_string()
             }),
-            description = "something went terribly wrong"
+            description = "Something went terribly wrong."
         ),
     ),
     request_body = NewKey
@@ -104,7 +101,7 @@ pub async fn upload_key(
 
     let stored_key = save_private_key_and_pin(key_info, &pool)
         .await
-        .expect("failed to save private key and pin");
+        .expect("Failed to save private key and pin.");
 
     Ok(stored_key.to_string())
 }

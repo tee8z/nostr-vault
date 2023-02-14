@@ -15,6 +15,6 @@ pub fn error_chain_fmt(
 
 #[derive(ToSchema, serde::Serialize, serde::Deserialize)]
 pub struct ErrorResponse {
-    pub ok: bool,
-    pub error: String,
+    #[schema(example = "8ehd99 is not a valid pin.")]
+    pub value: String,
 }

@@ -24,7 +24,6 @@ use utoipa_swagger_ui::SwaggerUi;
         schemas(crate::routes::KeyLookup,
                 crate::authentication::StoredKey,
                 crate::routes::NewKey,
-                crate::routes::UploadError,
                 crate::routes::ErrorResponse)
     ),
     tags(
