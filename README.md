@@ -7,10 +7,12 @@ The more often a private key is moved around, the more likely it will become com
 
 
 With all that in mind, this API has just three endpoints:
-/health_check -- used to see if the service is running 
-/upload_key -- uploads sha256 encrypted private key to the service
-/fetch_key -- retrieves a private key based on a provided PIN & nip05ID
+* /health_check -- used to see if the service is running 
+* /upload_key -- uploads sha256 encrypted private key to the service
+* /fetch_key -- retrieves a private key based on a provided PIN & nip05ID
+
 More documentation and a demo example of this API can be seen here: https://nostr-vault.duckdns.org/swagger-ui
+
 Example calling this API:
 ```
 curl -v -X 'GET' 'https://nostr-vault.duckdns.org/health_check' -H 'accept: */*'
