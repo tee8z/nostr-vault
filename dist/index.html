@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nostr Vault example code</title>
+    <link rel="" href="#">
+</head>
+
+<body>
+    <h3>Example client encryption & calls for using the nostr-vault</h3>
+    <label for="nostr-id">Nostr Nip 05 ID</label>
+    <input type="text" placeholder="Type" id="nostr-id">
+    <br>
+    <label for="nostr-private-key">Private Key</label>
+    <textarea type="text" placeholder="Type" id="nostr-private-key"></textarea>
+    <br>
+    <label for="pin">Pin</label>
+    <input type="number" placeholder="Type" id="pin">
+    <br>
+    <label for="password">Password</label>
+    <input type="text" placeholder="Type" id="password">
+    <br>
+    <button onclick="send_key()">Upload Key</button>
+    <br>
+    <div id="encrypted"></div>
+    <br>
+    <button onclick="get_key()">Fetch Key</button>
+    <br>
+    <label for="nostr-private-key-decrypted">Private Key</label>
+    <textarea type="text" placeholder="Type " id="nostr-private-key-decrypted"></textarea>
+    <br>
+    <div>Matches Starting Key</div>
+    <input id="matched" type="checkbox">
+
+    <script src="main.js"></script>
+</body>
+
+</html>

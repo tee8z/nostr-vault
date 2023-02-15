@@ -7,7 +7,7 @@ async fn upload_key_success() {
     let test_app = spawn_app().await;
     let client = reqwest::Client::new();
     let nip_05_id = "the_name_is_smith_bob_smith@test.com";
-    let private_key_hash = "5ed7b5ea7564ae34a282bb94a7977b3ca0814d241d0b5794c4cf5f0b80280b3a";
+    let private_key_hash = "$PBKDF2$i=100000,l=256,s=0Bu5lWu4s66/iottrlUGdckjf5nwnpB05jwp4yDh8NU=$AESGM$OrScsD+hHGaRaPbc$XMXVVbjt3JV+QsNb7ZWRc8uNod2YzJL0lSvW1FOiY38ywOu7IEChKs/IqEQ7knhZAmRGYqoB4dhAbdOTwVhYIeQsuf1+f+9ARPEjtURsDg==";
     let form_data =
         json!({"nip_05_id":nip_05_id,"pin":374859, "private_key_hash":private_key_hash});
     let response = client

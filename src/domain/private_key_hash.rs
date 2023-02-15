@@ -13,20 +13,22 @@ impl AsRef<str> for PrivateKeyHash {
 
 impl PrivateKeyHash {
     pub fn parse(secret: Secret<String>) -> Result<PrivateKeyHash, String> {
-        let hash = secret.expose_secret().to_string();
-        let is_empty_or_whitespace = hash.trim().is_empty();
-        let is_valid_characters = is_valid_pk_hash(hash.as_str());
+        let encrytion_schema = secret.expose_secret().to_string();
+        let is_empty_or_whitespace = encrytion_schema.trim().is_empty();
+        let is_valid_characters = is_valid_pk_hash(encrytion_schema.as_str());
         if is_empty_or_whitespace || !is_valid_characters {
-            Err(format!("{} is not a valid private key.", hash))
+            Err(format!("{} is not a valid private key.", encrytion_schema))
         } else {
-            Ok(Self(Secret::new(hash)))
+            Ok(Self(Secret::new(encrytion_schema)))
         }
     }
 }
 
+//Note: hexadecimal string with 64 characters.
 fn is_valid_pk_hash(text: &str) -> bool {
     lazy_static! {
-        static ref RE: Regex = Regex::new(r"^[a-fA-F0-9]{64}$").unwrap();
+        static ref RE: Regex =
+            Regex::new(r#"\$PBKDF2\$i=\d+,l=\d+,s=([\s\S]*?)\$(.+)\$(.+)"#).unwrap();
     }
     RE.is_match(text)
 }
@@ -35,7 +37,6 @@ fn is_valid_pk_hash(text: &str) -> bool {
 mod tests {
     use super::PrivateKeyHash;
     use claim::{assert_err, assert_ok};
-    use easy_hasher::easy_hasher::sha256;
     use secrecy::Secret;
 
     #[test]
@@ -46,10 +47,9 @@ mod tests {
 
     #[test]
     fn a_valid_key() {
-        let fake_key =
-            "npub1d4ed5x49d7p24xn63flj4985dc4gpfngdhtqcxpth0ywhm6czxcscfpcq8".to_string();
-        let hash = sha256(&fake_key);
-        let private_key = Secret::new(hash.to_hex_string());
+        //$PBKDF2$i=${iterations},l=${length},s=${saltBase64}$AESGM$${ivBase64}$${ciphertextBase64}
+        let fake_encryption_private_key = "$PBKDF2$i=100000,l=256,s=nz1o4R8CHGKJb/bAl3Rvz9WNTXKA62WOmQLCwaj8PMs=$AESGM$pZjYGCw+JTYngYh8$35oVClmat9FnQsGOWostohY2UKcWPPqodTz6jrjHC/BMXuD6nLaT1+UgPp9CuSWjl++NeT9G6asiDOYbXqQSK0BSXTA3MgHp5zVE8o/szg==";
+        let private_key = Secret::new(fake_encryption_private_key.to_string());
         assert_ok!(PrivateKeyHash::parse(private_key));
     }
 }
