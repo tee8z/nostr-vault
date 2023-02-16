@@ -63,7 +63,7 @@ jobs:
         unset DATABASE_URL
         sed -i 's|version = "OLD_TAG"|version = "'"$(echo ${GITHUB_REF#refs/tags/})"'"|' Cargo.toml
         sed 's|const BASEURL = "http://localhost:9000"|const BASEURL = "https://nostr-vault.duckdns.org"|g' dist/main.js > dist/main.js
-        cargo build --release --target ${{ matrix.target }} --resource dist/
+        cargo build --release --target ${{ matrix.target }}
       working-directory: ${{ github.workspace }}
 
     - name: Package Artifacts
