@@ -56,17 +56,15 @@ jobs:
       run: |
         rustup install ${{ matrix.rust }}
         rustup target add ${{ matrix.target }}
-        rustup show
-    - name: Update fixed strings
-      run: |
-        sed -i 's|version = "OLD_TAG"|version = "'"$(echo ${GITHUB_REF#refs/tags/})"'"|' Cargo.toml
-        sed 's|const BASEURL = "http://localhost:9000"|const BASEURL = "https://nostr-vault.duckdns.org"|g' dist/main.js > dist/main.js
-      working-directory: ${{ github.workspace }}
+        rustup show      
   
     - name: Build
       run: | 
         unset DATABASE_URL
-        cargo build --release --target ${{ matrix.target }}
+        sed -i 's|version = "OLD_TAG"|version = "'"$(echo ${GITHUB_REF#refs/tags/})"'"|' Cargo.toml
+        sed 's|const BASEURL = "http://localhost:9000"|const BASEURL = "https://nostr-vault.duckdns.org"|g' dist/main.js > dist/main.js
+        cargo build --release --target ${{ matrix.target }} --resource dist/
+      working-directory: ${{ github.workspace }}
 
     - name: Package Artifacts
       run: |
