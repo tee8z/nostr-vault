@@ -59,8 +59,8 @@ jobs:
         rustup show
     - name: Update fixed strings
       run: |
-        sed -i 's/version = "OLD_TAG"/version = "'"$(echo ${GITHUB_REF#refs/tags/})"'"/' Cargo.toml
-        sed 's/const BASEURL = "http://localhost:9000"/const BASEURL = "https://nostr-vault.duckdns.org"/g' dist/main.js > dist/main.js
+        sed -i 's|version = "OLD_TAG"|version = "'"$(echo ${GITHUB_REF#refs/tags/})"'"|' Cargo.toml
+        sed 's|const BASEURL = "http://localhost:9000"|const BASEURL = "https://nostr-vault.duckdns.org"|g' dist/main.js > dist/main.js
       working-directory: ${{ github.workspace }}
   
     - name: Build
