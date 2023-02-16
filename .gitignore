@@ -16,3 +16,5 @@ Cargo.lock
 
 # Removed so the SLQX macro can build without trying to connect to the DB
 .env
+localhost.pem
+localhost-key.pem

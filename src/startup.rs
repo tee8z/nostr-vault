@@ -1,13 +1,13 @@
 use crate::configuration::{DatabaseSettings, Settings};
 use crate::routes::{fetch_key, health_check, upload_key};
 use actix_cors::Cors;
+use actix_files::Files;
 use actix_web::dev::Server;
 use actix_web::web::Data;
-use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
-use std::path::PathBuf;
 use tracing::info;
 use tracing_actix_web::TracingLogger;
 use utoipa::openapi::{License, LicenseBuilder};
@@ -83,12 +83,11 @@ pub async fn run(
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
     let base_url = Data::new(ApplicationBaseUrl(base_url));
-    let mut dist_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    dist_path.push("example");
     let server = HttpServer::new(move || {
         let cors = Cors::default().allow_any_origin().send_wildcard();
         let mut openapi = ApiDoc::openapi();
         openapi.info.license = get_license();
+
         App::new()
             .wrap(TracingLogger::default())
             .wrap(cors)
@@ -98,9 +97,11 @@ pub async fn run(
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
             .service(SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-doc/openapi.json", openapi))
-            .service(index)
-            .service(main_js)
-            .service(actix_files::Files::new("/", &dist_path).index_file("index.html"))
+            .service(
+                Files::new("/example", "./dist/")
+                    .index_file("index.html")
+                    .show_files_listing(),
+            )
     })
     .listen(listener)?
     .run();
@@ -117,22 +118,4 @@ fn get_license() -> Option<License> {
         .build();
 
     Some(license)
-}
-
-#[get("/example")]
-async fn index() -> impl Responder {
-    // Load the index.html file from the embedded resource
-    let index_content = include_str!("../dist/index.html");
-    HttpResponse::Ok()
-        .content_type("text/html")
-        .body(index_content)
-}
-
-#[get("/main.js")]
-async fn main_js() -> impl Responder {
-    // Load the main.js file from the embedded resource
-    let main_content = include_str!("../dist/main.js");
-    HttpResponse::Ok()
-        .content_type("application/javascript")
-        .body(main_content)
 }

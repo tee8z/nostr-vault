@@ -37,7 +37,6 @@ async function send_key() {
         console.log("missing required values");
         return
     }
-
     const encryptedKey = await encryptData(privateKey, password);
     console.log(encryptedKey);
     const res = await upload_key(BASEURL, pin, encryptedKey, nip5id);
