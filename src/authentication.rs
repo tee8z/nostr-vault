@@ -23,7 +23,9 @@ pub struct StoredKey {
     pub created_at: String,
     #[schema(example = "the_name_is_bob_bob_smith@frogs.cloud")]
     pub nip_05_id: String,
-    #[schema(example = "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989")]
+    #[schema(
+        example = "$PBKDF2$i=100000,l=256,s=0Bu5lWu4s66/iottrlUGdckjf5nwnpB05jwp4yDh8NU=$AESGM$OrScsD+hHGaRaPbc$XMXVVbjt3JV+QsNb7ZWRc8uNod2YzJL0lSvW1FOiY38ywOu7IEChKs/IqEQ7knhZAmRGYqoB4dhAbdOTwVhYIeQsuf1+f+9ARPEjtURsDg=="
+    )]
     pub private_key_hash: String,
 }
 

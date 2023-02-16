@@ -63,7 +63,7 @@ impl ResponseError for LookupError {
                     id: 1000,
                     created_at: "2023-02-12T01:49:35+00:00".to_string(),
                     nip_05_id: "the_name_is_bob_bob_smith@frogs.cloud".to_string(),
-                    private_key_hash: "f913b8539438070c0920853da25e8d1a94d799d2b717ac6358ad77b141792989".to_string(),
+                    private_key_hash: "$PBKDF2$i=100000,l=256,s=0Bu5lWu4s66/iottrlUGdckjf5nwnpB05jwp4yDh8NU=$AESGM$OrScsD+hHGaRaPbc$XMXVVbjt3JV+QsNb7ZWRc8uNod2YzJL0lSvW1FOiY38ywOu7IEChKs/IqEQ7knhZAmRGYqoB4dhAbdOTwVhYIeQsuf1+f+9ARPEjtURsDg==".to_string(),
                 }),
                 description = "Successfully found pin."
             ),
