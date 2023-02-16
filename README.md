@@ -12,7 +12,7 @@ With all that in mind, this API has just three endpoints:
 * /fetch_key -- retrieves a private key based on a provided PIN & nip05ID
 
 An example javascript UI is hosted at this endpoint, it shows how a client can interact with this API:
-* /example
+* https://nostr-vault.duckdns.org/example
 
 Current thinking is to have that the encrypted key payload should be sent with all the needed info. to determine the algorthims to use to decrypt.
 This is the schema that is being validated before it can be stored:
