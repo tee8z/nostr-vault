@@ -19,6 +19,12 @@
 * `cargo fmt`
 * `cargo clippy`
 
+# To run example UI
+* `sudo apt install mkcert`
+* `mkcert localhost`
+* `cargo run`
+* `http://localhost:9000/example`
+
 # To run code coverage locally
 * `cargo install cargo-tarpaulin`
 * `cargo tarpaulin --all --ignore-tests --ignore-config`
